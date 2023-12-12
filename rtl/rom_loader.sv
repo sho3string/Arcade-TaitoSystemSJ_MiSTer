@@ -45,7 +45,7 @@ module selector
 
 		if     (ioctl_addr < 'h08000) ep0_cs = 1; // 0x8000 15   - Main CPU Main ROM Bank
 		else if(ioctl_addr < 'h10000) ep1_cs = 1; // 0x8000 15   - Main CPU Banked ROM
-		else if(ioctl_addr < 'h18000) ep2_cs = 1; // 0x8000 14	- Graphics ROM
+		else if(ioctl_addr < 'h18000) ep2_cs = 1; // 0x8000 14	 - Graphics ROM
 
 		
 		
@@ -89,7 +89,7 @@ module eprom_0 //program
 	output logic [7:0] DATA
 );
 
-	dpram_dc #(.widthad_a(15)) eprom_0
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_0
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -115,7 +115,7 @@ module eprom_1  //program
 	output logic [7:0] DATA
 );
 	
-	dpram_dc #(.widthad_a(15)) eprom_1
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15))eprom_1
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -139,7 +139,7 @@ module eprom_2
 	output logic [7:0] DATA
 );
 
-	dpram_dc #(.widthad_a(15)) eprom_2
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_2
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -163,7 +163,7 @@ module eprom_3 //sound ROM
 	output logic [7:0] DATA
 );
 
-	dpram_dc #(.widthad_a(14)) eprom_3
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(14)) eprom_3
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[13:0]),
@@ -188,7 +188,7 @@ module eprom_4 //layer ROM
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(8)) eprom_4
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(8)) eprom_4
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[7:0]),
@@ -212,7 +212,7 @@ module eprom_dummy
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(13)) eprom_dummy
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(13)) eprom_dummy
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[12:0]),
@@ -236,7 +236,7 @@ module eprom_5 //sound cpu program / data
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(14)) eprom_5
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(14)) eprom_5
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[13:0]),
@@ -261,7 +261,7 @@ module eprom_6
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_6
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_6
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -287,7 +287,7 @@ module eprom_7
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_7
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_7
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -312,7 +312,7 @@ module eprom_8
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_8
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_8
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -336,7 +336,7 @@ module eprom_9
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_9
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_9
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -360,7 +360,7 @@ module eprom_10
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_10
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_10
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -384,7 +384,7 @@ module eprom_11
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_11
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_11
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -408,7 +408,7 @@ module eprom_12
 	input logic        WR,
 	output logic [7:0] DATA
 );
-	dpram_dc #(.widthad_a(15)) eprom_12
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(15)) eprom_12
 	(
 		.clock_a(CLK),
 		.address_a(ADDR[14:0]),
@@ -436,7 +436,7 @@ module cprom_1
 	input logic        WR,
 	output logic [3:0] DATA
 );
-	dpram_dc #(.widthad_a(8)) cprom_1
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(8)) cprom_1
 	(
 		.clock_a(CLK),
 		.address_a(ADDR),
@@ -460,7 +460,7 @@ module cprom_2
 	input logic        WR,
 	output logic [3:0] DATA
 );
-	dpram_dc #(.widthad_a(8)) cprom_2
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(8)) cprom_2
 	(
 		.clock_a(CLK),
 		.address_a(ADDR),
@@ -484,7 +484,7 @@ module cprom_3
 	input logic        WR,
 	output logic [3:0] DATA
 );
-	dpram_dc #(.widthad_a(8)) cprom_3
+	dualport_2clk_ram #(.FALLING_B(1),.ADDR_WIDTH(8)) cprom_3
 	(
 		.clock_a(CLK),
 		.address_a(ADDR),

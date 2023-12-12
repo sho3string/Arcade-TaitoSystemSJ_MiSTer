@@ -70,10 +70,11 @@ reg [31:0]		pause_timer		= 1'b0;					// Time since pause
 reg				dim_video;				 				// Dim video requested (active-high)
 `endif
 
+reg user_button_last;
 always @(posedge clk_sys) begin
 
 	// Track user pause button down
-	reg user_button_last;
+	
 	user_button_last <= user_button;
 	if(!user_button_last & user_button) pause_toggle <= ~pause_toggle;
 

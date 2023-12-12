@@ -51,7 +51,8 @@ always @(posedge SOFF) {OBJOFF,SN3OFF,SN2OFF,SN1OFF,SDUMMY,OBJEX,VINVx,HINVx} = 
 //This ram stores the sprite location, sprite index and additional attributes.
 //The ram is written to once per line by the Z80 and read and sent to the sprite
 //hardware based on the scan-line horizontal position
-dpram_dc #(.widthad_a(8)) U1817_RAM //SJ - object data ram
+
+dualport_2clk_ram # (.ADDR_WIDTH(8)) U1817_RAM //SJ - object data ram
 (
 	.clock_a(clkm_48MHZ),
 	.address_a({OBJEX,H_BLANK,syncbus_HN[7:4],!syncbus_HN[2],syncbus_HN[1]}), 
@@ -66,7 +67,8 @@ dpram_dc #(.widthad_a(8)) U1817_RAM //SJ - object data ram
 	.q_b(Z80A_OD_out)
 );
 
-reg [7:0] OD,OD_PH1,OD_PH5,OD_PH7;
+reg [7:0] OD_PH1,OD_PH5,OD_PH7;
+wire [7:0] OD;
 
 //capture OD in 'Phase 1' once per horizontal slice of sprite (everything else is captured every 8 pixels)
 wire syncph1=(syncbus_HN[3:0]==4'b1001); //b1010 - b1001

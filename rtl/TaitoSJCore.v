@@ -41,7 +41,8 @@ module taitosj_fpga(
 
 	input [7:0] DIP1,
 	input [7:0] DIP2,
-	input [7:0] DIP3,	
+	input [7:0] DIP3,
+	input        dn_clk,         // M2M rom loading	
 	input [24:0] dn_addr,
 	input 		 dn_wr,
 	input [7:0]  dn_data,
@@ -227,7 +228,7 @@ reg  SSYNC;
 //wire CDRRQ;
 //assign CDRRQ =!(CDR1RQ&CDR2RQ&CDR3_6); //U54B - CPU is not writing to graphics memory
 
-dpram_dc #(.widthad_a(12)) U105_U104_RAM_2016 //VIDEO RAM
+dualport_2clk_ram #(.ADDR_WIDTH(12)) U105_U104_RAM_2016 //VIDEO RAM
 (
 	.clock_a(clkm_48MHZ),
 	.address_a(VRAM_ADDR), //!SELVRAM_B1
@@ -242,7 +243,7 @@ dpram_dc #(.widthad_a(12)) U105_U104_RAM_2016 //VIDEO RAM
 	.q_b()
 );
 
-dpram_dc #(.widthad_a(12)) U107_U106_RAM_2016 //VIDEO RAM
+dualport_2clk_ram #(.ADDR_WIDTH(12)) U107_U106_RAM_2016 //VIDEO RAM
 (
 	.clock_a(clkm_48MHZ),
 	.address_a(VRAM_ADDR), //!SELVRAM_B1
@@ -257,7 +258,7 @@ dpram_dc #(.widthad_a(12)) U107_U106_RAM_2016 //VIDEO RAM
 	.q_b()
 );
 
-dpram_dc #(.widthad_a(12)) U109_U108_RAM_2016 //VIDEO RAM
+dualport_2clk_ram #(.ADDR_WIDTH(12)) U109_U108_RAM_2016 //VIDEO RAM
 (
 	.clock_a(clkm_48MHZ),
 	.address_a(VRAM_ADDR), //!SELVRAM_B1
@@ -414,6 +415,7 @@ wire [7:0] AY1_IOA_out,AY2_IOA_out;
 
 game_sound EXT_SOUND(
 	//clocks
+	.dn_clk(dn_clk),
 	.clkm_48MHZ(clkm_48MHZ),			//master clock
 	.clkm_32MHZ(clkm_32MHZ),
 	.clkm_3MHZ(clkm_3MHZ),			//sound CPU clock
@@ -457,7 +459,7 @@ end
 assign Z80A_INT=rZ80A_INT;
 
 //main CPU (Z80A) work RAM - dual port RAM for hi-score logic
-dpram_dc #(.widthad_a(11)) U14_RAM_2016 //SJ
+dualport_2clk_ram #(.ADDR_WIDTH(11)) U14_RAM_2016 //SJ
 (
 	.clock_a(clkm_32MHZ),
 	.address_a(Z80A_addrbus[10:0]),
@@ -479,7 +481,7 @@ eprom_0 Z80A_MAIN_PROGRAMROMS
 	.CLK(clkm_32MHZ),//
 	.DATA(Z80A_MROM_out),//
 	.ADDR_DL(dn_addr),
-	.CLK_DL(clkm_32MHZ),//
+	.CLK_DL(dn_clk),//
 	.DATA_IN(dn_data),
 	.CS_DL(ep0_cs_i),
 	.WR(dn_wr)
@@ -491,7 +493,7 @@ eprom_1 Z80A_BANK_PROGRAMROMS
 	.CLK(clkm_32MHZ),//
 	.DATA(Z80A_BROM_out),//
 	.ADDR_DL(dn_addr),
-	.CLK_DL(clkm_32MHZ),//
+	.CLK_DL(dn_clk),//
 	.DATA_IN(dn_data),
 	.CS_DL(ep1_cs_i),
 	.WR(dn_wr)
@@ -564,7 +566,7 @@ assign DV=	(!syncbus_PH[7]) ? DVPH7 ://7
 
 assign VERTBITS=syncbus_V[7:0]+S_DATA[7:0]+DV;
 
-dpram_dc #(.widthad_a(12)) U5756 //SJ
+dualport_2clk_ram #(.ADDR_WIDTH(12)) U5756 //SJ
 (
 	.clock_a(clkm_32MHZ),
 	.address_a({syncbus_HN[2:1],VERTBITS[7:3],HORZBITS[4:0]}), 
@@ -605,7 +607,7 @@ selector DLSEL
 	.cp3_cs(cp3_cs_i)	
 );
 
-dpram_dc #(.widthad_a(8)) U7273 //SJ
+dualport_2clk_ram #(.ADDR_WIDTH(8)) U7273 //SJ
 (
 	.clock_a(clkm_48MHZ),
 	.address_a({1'b0,syncbus_HN[2:1],HORZBITS2[4:0]}), //4=[2],2=[1]
@@ -670,7 +672,7 @@ eprom_2 EXT_ROM
 	.DATA(EXT_DATA),//
 	
 	.ADDR_DL(dn_addr),
-	.CLK_DL(clkm_32MHZ),//
+	.CLK_DL(dn_clk),//
 	.DATA_IN(dn_data),
 	.CS_DL(ep2_cs_i),
 	.WR(dn_wr)
@@ -761,7 +763,7 @@ eprom_4 EB16(
 	.DATA(EB16_out),//
 
 	.ADDR_DL(dn_addr),
-	.CLK_DL(clkm_32MHZ),//
+	.CLK_DL(dn_clk),//
 	.DATA_IN(dn_data),
 	.CS_DL(ep4_cs_i),
 	.WR(dn_wr)
@@ -780,7 +782,7 @@ reg U46A_Q;
 always @(posedge (Z80A_addrbus[0]|VCRRQ|Z80A_WR)) U46A_Q<=Z80A_databus_out[0];
 //wire U67_DI8 = Z80A_addrbus[0]|VCRRQ|Z80A_WR;
 
-dpram_dc #(.widthad_a(6),.width_a(16)) U67_RAM //SJ - using 16-bit memory for 9-bit
+dualport_2clk_ram #(.ADDR_WIDTH(6),.DATA_WIDTH(16)) U67_RAM //SJ - using 16-bit memory for 9-bit
 (
 	.clock_a(clkm_48MHZ),
 	.address_a(MA),

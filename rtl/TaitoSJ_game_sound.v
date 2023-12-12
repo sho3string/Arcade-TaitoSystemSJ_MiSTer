@@ -1,5 +1,6 @@
 module game_sound (
 	//clocks
+	input dn_clk,
 	input clkm_48MHZ,			//master clock
 	input clkm_32MHZ,			//sys_clk
 	input clkm_3MHZ,			//sound CPU clock
@@ -120,7 +121,7 @@ eprom_3 SND_PROG_ROM  //Sound EPROM
 	.DATA(SND_PROG_ROM_data),
 
 	.ADDR_DL(dn_addr),
-	.CLK_DL(clkm_32MHZ),
+	.CLK_DL(dn_clk),
 	.DATA_IN(dn_data),
 	.CS_DL(snd_prom_cs_i),		//load data into ROM
 	.WR(dn_wr)
@@ -130,7 +131,7 @@ eprom_3 SND_PROG_ROM  //Sound EPROM
 
 wire [7:0] SND_RAM_out;
 
-dpram_dc #(.widthad_a(10)) S2_U11B //sf
+dualport_2clk_ram #(.ADDR_WIDTH(10)) S2_U11B //sf
 (
 	.clock_a(clkm_48MHZ),
 	.address_a(Z80B_addrbus[9:0]),
