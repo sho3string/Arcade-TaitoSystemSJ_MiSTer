@@ -58,7 +58,7 @@ dualport_2clk_ram # (.ADDR_WIDTH(8)) U1817_RAM //SJ - object data ram
 	.address_a({OBJEX,H_BLANK,syncbus_HN[7:4],!syncbus_HN[2],syncbus_HN[1]}), 
 	.data_a(),
 	.wren_a(1'b0),
-	.q_a(OD),
+	.q_a(ODx),
 	
 	.clock_b(clkm_32MHZ),
 	.address_b({Z80A_addrbus[7:2],(Z80A_addrbus[1]^!Z80A_addrbus[0]),!Z80A_addrbus[0]}),
@@ -67,13 +67,21 @@ dualport_2clk_ram # (.ADDR_WIDTH(8)) U1817_RAM //SJ - object data ram
 	.q_b(Z80A_OD_out)
 );
 
-reg [7:0] OD_PH1,OD_PH5,OD_PH7;
-wire [7:0] OD;
+wire [7:0] ODx;
+reg [7:0] OD,OD_1,OD_2,OD_PH1,OD_PH5,OD_PH7;
+
+
+//maybe OD needs metastability
+always @(posedge clkm_48MHZ) begin
+	OD_2<=ODx;
+	OD_1<=OD_2;
+	OD<=OD_1;
+end
 
 //capture OD in 'Phase 1' once per horizontal slice of sprite (everything else is captured every 8 pixels)
 wire syncph1=(syncbus_HN[3:0]==4'b1001); //b1010 - b1001
 always @(posedge syncph1) OD_PH1<=OD; //syncbus_PH[1]|!syncbus_HN[3]
-always @(posedge syncbus_PH[5]) OD_PH5<=OD+syncbus_V; //-1 made issues worse +1 didn't do anything and +2 went to far
+always @(posedge syncbus_PH[5]) OD_PH5<=OD+syncbus_V+1; //-1 made issues worse +1 didn't do anything and +2 went to far
 always @(posedge syncbus_PH[7]) OD_PH7<=OD;
 
 assign U83_Q     = (!OBJRQ) ? 8'b00000000 : {OD_PH5[7:4],OD_PH5[3:0]^{4{OD1_PH7}}};
