@@ -19,7 +19,8 @@ module taitosj_fpga(
 	output reg [2:0] RED,    
 	output reg [2:0] GREEN,	 
 	output reg [2:0] BLUE,	 
-	output core_pix_clk,			
+	output core_pix_clk,
+	output core_osd_clk,	
 	output H_SYNC,				
 	output V_SYNC,				
 	output H_BLANK,
@@ -79,6 +80,7 @@ always @(posedge clkm_48MHZ) begin
 end
 
 assign core_pix_clk=clkc_6MHZ;
+assign core_osd_clk=clkm_24MHZ;
 
 //SYSTEM SJ CLOCKS - CPU
 reg clkm_16MHZ,clkm_8MHZ, clkm_4MHZ,clkm_4MHZn,clkm_2MHZ;

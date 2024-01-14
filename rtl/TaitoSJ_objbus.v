@@ -51,7 +51,7 @@ always @(posedge SOFF) {OBJOFF,SN3OFF,SN2OFF,SN1OFF,SDUMMY,OBJEX,VINVx,HINVx} = 
 //This ram stores the sprite location, sprite index and additional attributes.
 //The ram is written to once per line by the Z80 and read and sent to the sprite
 //hardware based on the scan-line horizontal position
-
+wire [7:0] ODx;
 dualport_2clk_ram # (.ADDR_WIDTH(8)) U1817_RAM //SJ - object data ram
 (
 	.clock_a(clkm_48MHZ),
@@ -67,9 +67,7 @@ dualport_2clk_ram # (.ADDR_WIDTH(8)) U1817_RAM //SJ - object data ram
 	.q_b(Z80A_OD_out)
 );
 
-wire [7:0] ODx;
 reg [7:0] OD,OD_1,OD_2,OD_PH1,OD_PH5,OD_PH7;
-
 
 //maybe OD needs metastability
 always @(posedge clkm_48MHZ) begin
